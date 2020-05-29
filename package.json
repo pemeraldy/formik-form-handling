@@ -1,10 +1,12 @@
 {
   "name": "react",
   "version": "1.0.0",
-  "description": "React example starter project",
+  "description": "formik for form validation",
   "keywords": [
     "react",
-    "starter"
+    "starter",
+    "formik",
+    "react form validation"
   ],
   "main": "src/index.js",
   "dependencies": {
