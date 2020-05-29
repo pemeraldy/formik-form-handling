@@ -1,82 +1,67 @@
 import React from "react";
-import { useFormik } from "formik";
-
-const validate = values => {
-  const errors = {};
-  if (!values.email) {
-    errors.email = "email required";
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-    errors.email = "Email is invalid";
-  }
-  if (!values.firstName) {
-    errors.firstName = "First name cannot be empty";
-  } else if (values.firstName.length < 3) {
-    errors.firstName = "First name cannot be less the 3 characters";
-  }
-
-  if (!values.lastName) {
-    errors.lastName = "First name cannot be empty";
-  } else if (values.lastName.length < 3) {
-    errors.lastName = "Last name cannot be less the 3 characters";
-  }
-
-  return errors;
-};
+import { Formik } from "formik";
+import * as Yup from "yup";
 
 const SignUp = () => {
-  const formik = useFormik({
-    initialValues: { email: "", firstName: "", lastName: "" },
-    validate,
-    onSubmit: values => {
-      alert(JSON.stringify(values, null, 2));
-    }
-  });
-
   return (
-    <div>
-      <form onSubmit={formik.handleSubmit}>
-        <div>
-          <label>Email</label>
-          <input
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            name="email"
-            type="email"
-            value={formik.values.email}
-          />
-          {formik.touched.email && formik.errors.email ? (
-            <p>{formik.errors.email}</p>
-          ) : null}
-        </div>
-        <div>
-          <label>First Name</label>
-          <input
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            name="firstName"
-            type="text"
-            value={formik.values.firstName}
-          />
-          {formik.touched.firstName && formik.errors.firstName ? (
-            <p>{formik.errors.firstName}</p>
-          ) : null}
-        </div>
-        <div>
-          <label>Last Name</label>
-          <input
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            name="lastName"
-            type="text"
-            value={formik.values.lastName}
-          />
-          {formik.touched.lastName && formik.errors.lastName ? (
-            <p>{formik.errors.lastName}</p>
-          ) : null}
-        </div>
-        <button type="submit">Subscribe</button>
-      </form>
-    </div>
+    <Formik
+      initialValues={{ firstName: "", lastName: "", email: "" }}
+      validationSchema={Yup.object({
+        firstName: Yup.string()
+          .max(10, "Must be 10 letters or less")
+          .required("required"),
+        lastName: Yup.string()
+          .max("10", "Must be 10 letters or less")
+          .required("required"),
+        email: Yup.string().email("Invalid email address").required("required"),
+      })}
+      onSubmit={(values, { setSubmitting }) => {
+        setTimeout(() => {
+          alert(JSON.stringify(values, null, 2));
+          setSubmitting(false);
+        }, 600);
+      }}
+    >
+      {(formik) => (
+        <form onSubmit={formik.handleSubmit}>
+          <div>
+            <label htmlFor="FirstName">First Name</label>
+            <input
+              type="text"
+              name="firstName"
+              {...formik.getFieldProps("firstName")}
+            />
+            {formik.touched.firstName && formik.errors.firstName ? (
+              <p>{formik.errors.firstName}</p>
+            ) : null}
+          </div>
+          <div>
+            <label htmlFor="lastName">Last name</label>
+            <input
+              type="text"
+              name="LastName"
+              {...formik.getFieldProps("lastName")}
+            />
+            {formik.touched.lastName && formik.errors.lastName ? (
+              <p>{formik.errors.lastName}</p>
+            ) : null}
+          </div>
+          <div>
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              name="email"
+              {...formik.getFieldProps("email")}
+            />
+            {formik.touched.email && formik.errors.email ? (
+              <p>{formik.errors.email}</p>
+            ) : null}
+          </div>
+
+          <button type="submit">Subscribe</button>
+        </form>
+      )}
+    </Formik>
   );
 };
 
